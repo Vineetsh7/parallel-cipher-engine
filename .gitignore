@@ -43,3 +43,5 @@
 .env
 # Visual Studio Folder
 .vs/
+test/
+test/*.txt
