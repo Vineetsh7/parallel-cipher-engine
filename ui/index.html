@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Cipher Engine</title>
+    <!-- Modern Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <main class="container">
+        <!-- LEFT SECTION: Title & Form -->
+        <div class="left-section">
+            <header class="header">
+                <div class="badge">v1.2.0 C++17</div>
+                <h1>Parallel <span class="gradient-text">Cipher Engine</span></h1>
+                <p class="subtitle">High-performance multithreaded file encryption and decryption.</p>
+            </header>
+
+            <div class="glass-card main-interface">
+                <form id="engine-form">
+                    <div class="input-group">
+                        <label for="directory">Target Directory</label>
+                        <div class="input-wrapper">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>
+                            <input type="text" id="directory" placeholder="e.g., ./test_folder or C:\my_files" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <label class="radio-card">
+                            <input type="radio" name="action" value="encrypt" checked>
+                            <div class="card-content">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <span>Encrypt</span>
+                            </div>
+                        </label>
+
+                        <label class="radio-card">
+                            <input type="radio" name="action" value="decrypt">
+                            <div class="card-content">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+                                <span>Decrypt</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="primary-btn">
+                        <span class="btn-text">Execute Engine</span>
+                        <div class="loader hidden"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT SECTION: Terminal Output -->
+        <div class="right-section">
+            <div id="terminal-container" class="glass-card terminal">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="terminal-title">pce.exe - execution log</span>
+                </div>
+                <pre><code id="terminal-output">Ready. Awaiting execution...</code></pre>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
