@@ -1,7 +1,9 @@
+// env_reader_alt.cpp
+// Legacy/alternate IO implementation — renamed from env_reader.cpp
 #include <iostream>
-#include "IO.hpp"
+#include "file_stream.hpp"
 
-IO::IO(const std::string &file_path)
+IO::IO(const std::string& file_path)
 {
     file_stream.open(file_path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file_stream.is_open())

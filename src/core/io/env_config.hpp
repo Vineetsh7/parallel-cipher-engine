@@ -1,5 +1,5 @@
-#ifndef READ_ENV_HPP
-#define READ_ENV_HPP
+#ifndef ENV_CONFIG_HPP
+#define ENV_CONFIG_HPP
 
 #include <string>
 

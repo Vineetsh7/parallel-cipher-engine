@@ -1,7 +1,9 @@
-#ifndef PROCESS_MANAGEMENT_HPP
-#define PROCESS_MANAGEMENT_HPP
+// scheduler_legacy.hpp
+// Legacy/alternate scheduler header — renamed from process_management.hpp
+#ifndef SCHEDULER_LEGACY_HPP
+#define SCHEDULER_LEGACY_HPP
 
-#include "task.hpp"
+#include "work_item.hpp"
 #include <queue>
 #include <memory>
 

@@ -2,7 +2,7 @@ import os
 import string
 import random
 
-def makeFiles(path):
+def generate_test_files(path):
     os.makedirs(path, exist_ok=True)
     os.chdir(path)
     for i in range(100):
@@ -12,4 +12,4 @@ def makeFiles(path):
             file.write(random_string)
 
 if __name__ == "__main__":
-    makeFiles("test")
+    generate_test_files("test")

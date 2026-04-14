@@ -1,37 +1,37 @@
 CXX = g++
 # -pthread: required for std::thread, std::mutex, std::condition_variable on Linux/WSL2
 CXXFLAGS = -std=c++17 -g -Wall -pthread \
-           -I. -Isrc/app/encryptDecrypt -Isrc/app/fileHandling -Isrc/app/processes
+           -I. -Isrc/core/cipher -Isrc/core/io -Isrc/core/scheduler
 
-MAIN_TARGET = encrypt_decrypt
-CRYPTION_TARGET = cryption
+MAIN_TARGET = pce
+CIPHER_TARGET = cipher
 
-MAIN_SRC = main.cpp \
-           src/app/processes/ProcessManagement.cpp \
-           src/app/fileHandling/IO.cpp \
-           src/app/fileHandling/ReadEnv.cpp \
-           src/app/encryptDecrypt/Cryption.cpp
+MAIN_SRC = engine.cpp \
+           src/core/scheduler/task_scheduler.cpp \
+           src/core/io/file_stream.cpp \
+           src/core/io/env_config.cpp \
+           src/core/cipher/cipher_engine.cpp
 
-CRYPTION_SRC = src/app/encryptDecrypt/CryptionMain.cpp \
-               src/app/encryptDecrypt/Cryption.cpp \
-               src/app/fileHandling/IO.cpp \
-               src/app/fileHandling/ReadEnv.cpp
+CIPHER_SRC = src/core/cipher/cipher_runner.cpp \
+             src/core/cipher/cipher_engine.cpp \
+             src/core/io/file_stream.cpp \
+             src/core/io/env_config.cpp
 
 MAIN_OBJ = $(MAIN_SRC:.cpp=.o)
-CRYPTION_OBJ = $(CRYPTION_SRC:.cpp=.o)
+CIPHER_OBJ = $(CIPHER_SRC:.cpp=.o)
 
-all: $(MAIN_TARGET) $(CRYPTION_TARGET)
+all: $(MAIN_TARGET) $(CIPHER_TARGET)
 
 $(MAIN_TARGET): $(MAIN_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(CRYPTION_TARGET): $(CRYPTION_OBJ)
+$(CIPHER_TARGET): $(CIPHER_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(MAIN_OBJ) $(CRYPTION_OBJ) $(MAIN_TARGET) $(CRYPTION_TARGET)
+	rm -f $(MAIN_OBJ) $(CIPHER_OBJ) $(MAIN_TARGET) $(CIPHER_TARGET)
 
 .PHONY: clean all

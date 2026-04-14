@@ -1,6 +1,6 @@
-// IO.hpp
-#ifndef IO_HPP
-#define IO_HPP
+// file_stream.hpp
+#ifndef FILE_STREAM_HPP
+#define FILE_STREAM_HPP
 
 #include <fstream>
 #include <string>
