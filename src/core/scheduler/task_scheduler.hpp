@@ -13,14 +13,14 @@
 
 class ProcessManagement {
 public:
-    // Initializes the thread pool and stores the global environment key
+    // constructor
     ProcessManagement(int cipherKey);
     ~ProcessManagement();
 
-    // Queues a task for the workers
+    // add task
     bool submitToQueue(Task task);
 
-    // Waits for all tasks and cleanly shuts down the pool
+    // wait and shutdown
     void waitForAll();
 
 private:
@@ -33,7 +33,7 @@ private:
     std::condition_variable cv;
     std::atomic<bool> stop;
 
-    // Hard limit on queue size to prevent memory exhaustion on millions of files
+    // max queue size
     static constexpr size_t MAX_QUEUE_SIZE = 10000;
 };
 

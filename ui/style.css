@@ -106,6 +106,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
 }
 
 /* Header */
@@ -309,9 +310,8 @@ input[type="text"]:focus {
     padding: 0;
     overflow: hidden;
     animation-delay: 0.4s;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    display: block;
+    height: 500px; /* Fixed block height */
     border-color: #30363d;
     background: #0d1117;
 }
@@ -349,10 +349,10 @@ input[type="text"]:focus {
 
 .terminal pre {
     padding: 1.5rem;
-    flex: 1;
     overflow-y: auto;
     background: transparent;
     margin: 0;
+    height: calc(100% - 47px); /* Subtract header height to make rest scrollable */
 }
 
 .terminal code {
@@ -415,9 +415,11 @@ input[type="text"]:focus {
     .header {
         text-align: center;
     }
+    .terminal {
+        height: auto;
+    }
     .terminal pre {
         height: 300px;
-        flex: none;
     }
 }
 @media (max-width: 640px) {

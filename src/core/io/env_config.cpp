@@ -17,7 +17,7 @@ std::string ReadEnv::readKey() {
     buffer << f_stream.rdbuf();
     std::string content = buffer.str();
 
-    // Trim leading and trailing whitespace / newlines so stoi() doesn't throw
+    // trim whitespace
     const std::string whitespace = " \t\n\r\f\v";
     content.erase(content.find_last_not_of(whitespace) + 1);
     content.erase(0, content.find_first_not_of(whitespace));

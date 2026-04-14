@@ -32,18 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ directory, action }),
             });
 
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error("Server returned HTTP " + response.status);
+            }
 
-            if (data.status === 'success') {
-                let outputStr = "";
-                if (data.output) outputStr += data.output;
-                if (data.error && data.error.trim() !== '') outputStr += "\n[STDERR]: " + data.error;
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+            
+            // Stream the text line by line as it comes from the C++ binary
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
                 
-                terminalOutput.textContent += '\n' + outputStr;
-                terminalOutput.textContent += '\n\n[Process Completed Successfully]';
-            } else {
-                terminalOutput.classList.add('error-text');
-                terminalOutput.textContent += '\n\n[Error]: ' + (data.message || 'Unknown error occurred.');
+                terminalOutput.textContent += decoder.decode(value, { stream: true });
+                
+                // Keep auto-scrolling to bottom as text arrives
+                const preElement = terminalOutput.parentElement;
+                preElement.scrollTop = preElement.scrollHeight;
             }
         } catch (error) {
             terminalOutput.classList.add('error-text');

@@ -4,7 +4,7 @@
 #include "../io/env_config.hpp"
 
 int main(int argc, char* argv[]) {
-    // Allows running standalone encryption on one file: ./cipher test1.txt ENCRYPT
+    // allow standalone use
     if (argc != 3) {
         std::cerr << "Usage: ./cipher <file_path> <ENCRYPT|DECRYPT>" << std::endl;
         return 1;

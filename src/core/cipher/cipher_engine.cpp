@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <ctime>
 #include <iomanip>
+#include <cstdint>
 
 int executeCryption(const Task& task, int key) {
     IO io(task.filePath);
@@ -15,11 +16,14 @@ int executeCryption(const Task& task, int key) {
         return 1;
     }
 
-    // Process chunk by chunk (e.g. 64KB) to save memory and utilize CPU cache fully.
+    // process in chunks
     constexpr size_t CHUNK_SIZE = 64 * 1024;
     std::vector<char> buffer(CHUNK_SIZE);
 
-    // Keep going until EOF
+    // init prng state
+    uint64_t stream_state = static_cast<uint64_t>(key) ^ 0x9E3779B97F4A7C15ULL;
+
+    // read till eof
     f_stream.seekg(0, std::ios::beg);
     while (f_stream) {
         std::streampos current_pos = f_stream.tellg();
@@ -30,27 +34,33 @@ int executeCryption(const Task& task, int key) {
             break;
         }
 
-        // Apply cipher logic on the memory buffer
+        // apply cipher
         for (std::streamsize i = 0; i < bytes_read; ++i) {
-            if (task.action == Action::ENCRYPT) {
-                buffer[i] = static_cast<char>((static_cast<unsigned char>(buffer[i]) + key) % 256);
-            } else {
-                buffer[i] = static_cast<char>((static_cast<unsigned char>(buffer[i]) - key + 256) % 256);
-            }
+            // prng step
+            stream_state ^= stream_state >> 12;
+            stream_state ^= stream_state << 25;
+            stream_state ^= stream_state >> 27;
+            uint64_t prng_output = stream_state * 0x2545F4914F6CDD1DULL;
+            
+            // get keystream byte
+            unsigned char keystream_byte = static_cast<unsigned char>((prng_output >> 56) & 0xFF);
+            
+            // xor buffer
+            buffer[i] ^= keystream_byte;
         }
 
-        // Write the processed chunk back to its original position
-        f_stream.clear();  // Clear EOF bit if we hit the end of file during read
+        // write chunk back
+        f_stream.clear();  // clear eof flag
         f_stream.seekp(current_pos);
         f_stream.write(buffer.data(), bytes_read);
         
-        // Seek 'g' pointer back to end of the written block to continue reading
+        // reset read pointer
         f_stream.seekg(current_pos + std::streamoff(bytes_read));
     }
 
     f_stream.close();
 
-    // Standard output logging
+    // log completion
     std::time_t t = std::time(nullptr);
     std::tm* now = std::localtime(&t);
     std::cout << "Processed [" << (task.action == Action::ENCRYPT ? "ENCRYPT" : "DECRYPT") 

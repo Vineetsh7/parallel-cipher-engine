@@ -29,34 +29,37 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return
 
             try:
-                # Provide inputs sequentially via stdin for the c++ program
+                # Provide inputs via CLI arguments for the upgraded c++ program
+                executable = 'pce.exe' if os.name == 'nt' else './pce'
                 process = subprocess.Popen(
-                    ['pce.exe' if os.name == 'nt' else './pce'], 
-                    stdin=subprocess.PIPE, 
+                    [executable, '--dir', target_directory, '--action', action], 
                     stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE, 
-                    text=True
+                    stderr=subprocess.STDOUT, 
+                    text=True,
+                    bufsize=1
                 )
                 
-                stdout, stderr = process.communicate(input=f"{target_directory}\n{action}\n")
-                
                 self.send_response(200)
-                self.send_header('Content-type', 'application/json')
+                self.send_header('Content-type', 'text/plain; charset=utf-8')
                 self.end_headers()
                 
-                response = {
-                    'status': 'success',
-                    'output': stdout,
-                    'error': stderr
-                }
-                self.wfile.write(json.dumps(response).encode('utf-8'))
+                for line in iter(process.stdout.readline, ''):
+                    if not line: break
+                    try:
+                        self.wfile.write(line.encode('utf-8'))
+                        self.wfile.flush()
+                    except BrokenPipeError:
+                        break
+                        
+                process.stdout.close()
+                process.wait()
                 
             except Exception as e:
-                self.send_response(500)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                response = {'status': 'error', 'message': str(e)}
-                self.wfile.write(json.dumps(response).encode('utf-8'))
+                try:
+                    self.wfile.write(f"\n[Error]: {str(e)}".encode('utf-8'))
+                    self.wfile.flush()
+                except:
+                    pass
         else:
             self.send_response(404)
             self.end_headers()

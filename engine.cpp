@@ -11,11 +11,19 @@ int main(int argc, char* argv[]) {
     std::string directory;
     std::string action;
 
-    std::cout << "Enter the directory path: ";
-    std::getline(std::cin, directory);
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--dir" && i + 1 < argc) {
+            directory = argv[++i];
+        } else if (arg == "--action" && i + 1 < argc) {
+            action = argv[++i];
+        }
+    }
 
-    std::cout << "Enter the action (encrypt/decrypt): ";
-    std::getline(std::cin, action);
+    if (directory.empty() || (action != "encrypt" && action != "decrypt")) {
+        std::cerr << "Usage: pce --dir <directory_path> --action <encrypt|decrypt>\n";
+        return 1;
+    }
 
     try {
         if (!fs::exists(directory) || !fs::is_directory(directory)) {
@@ -23,7 +31,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        // 1. Parse Config ONCE for all workers
+        // parse config
         ReadEnv env;
         int cipherKey = 0;
         try {
@@ -34,7 +42,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        // 2. Initialise the global Thread Pool
+        // init thread pool
         ProcessManagement processManagement(cipherKey);
         Action taskAction = (action == "encrypt") ? Action::ENCRYPT : Action::DECRYPT;
 
@@ -43,7 +51,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Starting directory traversal and processing at: " 
                   << std::put_time(now, "%Y-%m-%d %H:%M:%S") << std::endl;
 
-        // 3. Queue lightweight tasks seamlessly without maintaining giant OS blocks
+        // queue tasks
         for (const auto& entry : fs::recursive_directory_iterator(directory)) {
             if (entry.is_regular_file()) {
                 std::string filePath = entry.path().string();
@@ -52,7 +60,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // 4. Clean exit after all workers finish
+        // wait and exit
         processManagement.waitForAll();
         
         t = std::time(nullptr);
