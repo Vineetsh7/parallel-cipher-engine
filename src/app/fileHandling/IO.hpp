@@ -1,14 +1,13 @@
+// IO.hpp
 #ifndef IO_HPP
 #define IO_HPP
 
 #include <fstream>
 #include <string>
-using namespace std;
 
-class IO
-{
+class IO {
 public:
-    IO(const std::string &file_path);
+    IO(const std::string& file_path);
     ~IO();
     std::fstream getFileStream();
 
