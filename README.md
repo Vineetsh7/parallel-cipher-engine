@@ -21,7 +21,9 @@ make clean
 make all
 ```
 
-This commands will compile the C++ source files and generate the main executable named `pce` (or `pce.exe` on Windows).
+This will compile the C++ source files and generate two executables:
+- `pce` / `pce.exe` — the main parallel cipher engine
+- `cipher` / `cipher.exe` — a standalone cipher runner
 
 ## Configuration
 
@@ -36,23 +38,32 @@ The application requires a numerical encryption key to function.
 
 ## How to Run
 
-Start the compiled engine from your terminal:
+The engine is driven entirely by command-line flags — there are no interactive prompts.
 
 ```bash
-./pce          # Linux / macOS / WSL
-# OR
-.\pce.exe      # Windows
+# Linux / macOS / WSL
+./pce --dir <directory_path> --action <encrypt|decrypt>
+
+# Windows
+.\pce.exe --dir <directory_path> --action <encrypt|decrypt>
 ```
 
-When you run it, the program will interactively prompt you for inputs:
+**Flags:**
+| Flag | Description |
+|------|-------------|
+| `--dir` | Relative or absolute path to the folder to process |
+| `--action` | Either `encrypt` or `decrypt` |
 
+**Examples:**
+```bash
+./pce --dir ./test_folder --action encrypt
+./pce --dir C:\my_files  --action decrypt
+```
+
+If either flag is missing or `--action` is not `encrypt`/`decrypt`, the engine prints usage and exits:
 ```text
-Enter the directory path: ./test_folder
-Enter the action (encrypt/decrypt): encrypt
+Usage: pce --dir <directory_path> --action <encrypt|decrypt>
 ```
-
-1. **directory path**: Enter the relative or absolute path to the folder containing the files you wish to process (e.g., `C:\my_files` or `./src`).
-2. **action**: Type either `encrypt` or `decrypt`.
 
 The engine will then queue all files recursively and use the initialized thread pool to rapidly process them, printing start and end timestamps.
 
